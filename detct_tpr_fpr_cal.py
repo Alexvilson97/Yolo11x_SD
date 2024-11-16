@@ -100,6 +100,7 @@ def evaluate_detections(detected_boxes, ground_truth_boxes, iou_threshold=0.5):
     gt_boxes = [(box[0], box[1], box[2], box[3]) for box in ground_truth_boxes]
     gt_ids = [box[4] for box in ground_truth_boxes]
 
+<<<<<<< HEAD
     # Check for True Positives (TP), False Positives (FP), and False Negatives (FN)
     matched_gt = set()
     for idx, det_box in enumerate(valid_detected_boxes):
@@ -116,6 +117,13 @@ def evaluate_detections(detected_boxes, ground_truth_boxes, iou_threshold=0.5):
 
     fn = len(gt_boxes) - len(matched_gt)
     return tp, fp, fn, tn
+=======
+        tpr_list.append(tpr)
+        fpr_list.append(fpr)
+        
+        
+    return thresholds, tpr_list, fpr_list
+>>>>>>> 2bc15d4 (added coco.yaml)
 
 
 # Evaluate TPR, FNR at different confidence thresholds
