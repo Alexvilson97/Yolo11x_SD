@@ -3,6 +3,7 @@ import csv
 import cv2
 from ultralytics import YOLO
 import yaml
+import re
 
 # Load YOLO model
 def load_yolo_model(weights_path="yolo11x.pt"):
@@ -46,59 +47,76 @@ def load_classes_from_yaml(yaml_path):
         data = yaml.safe_load(f)
     return data['names']
 
-# Save detections to CSV and save image with detections in a different folder
-def save_detections_to_csv(boxes, confidences, class_ids, classes, image_path, csv_output_dir='New_real_detected_csv', image_output_dir='real_Detected_Images'):
-    image_filename = os.path.basename(image_path)
-    image_name, _ = os.path.splitext(image_filename)
-    
-    # Prepare CSV file path
-    csv_filename = f"{image_name}.csv"
-    csv_path = os.path.join(csv_output_dir, csv_filename)
-    
-    # Prepare image output folder
-    os.makedirs(csv_output_dir, exist_ok=True)
+def save_detections_and_ground_truth(
+    image_path, 
+    ground_truth_csv, 
+    boxes, 
+    confidences, 
+    class_ids, 
+    classes, 
+    image_output_dir='real_Detected_Images', 
+    csv_output_dir='real_Detected_CSVs'
+):
+    # Create output directories if they don't exist
     os.makedirs(image_output_dir, exist_ok=True)
+    os.makedirs(csv_output_dir, exist_ok=True)
 
-    # Load and annotate the image
-    image = cv2.imread(image_path)
-    height, width, _ = image.shape
+    # Load the original image
+    original_image = cv2.imread(image_path)
+    if original_image is None:
+        print(f"Error: Could not load image {image_path}")
+        return
 
-    # Save detections to CSV
-    with open(csv_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['filename', 'width', 'height', 'class', 'xmin', 'ymin', 'xmax', 'ymax', 'confidence'])
-        
+    # Create a copy for YOLO detections
+    yolo_image = original_image.copy()
+
+    # Save YOLO detections to CSV
+    yolo_csv_filename = os.path.join(csv_output_dir, f"{os.path.splitext(os.path.basename(image_path))[0]}_detections.csv")
+    with open(yolo_csv_filename, mode='w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['filename', 'class', 'xmin', 'ymin', 'xmax', 'ymax', 'confidence'])
+
         for i in range(len(boxes)):
             x, y, w, h = boxes[i]
             xmax = x + w
             ymax = y + h
-            
-            writer.writerow([
-                image_filename,
-                width,
-                height,
-                classes[class_ids[i]],
-                x,
-                y,
-                xmax,
-                ymax,
-                confidences[i]
-            ])
-            
-            # Draw bounding box and label on the image
+            writer.writerow([os.path.basename(image_path), classes[class_ids[i]], x, y, xmax, ymax, confidences[i]])
+
+            # Draw YOLO detections (green) on YOLO image
             label = f"{classes[class_ids[i]]}: {confidences[i]:.2f}"
-            cv2.rectangle(image, (x, y), (xmax, ymax), (0, 255, 0), 2)
-            cv2.putText(image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.rectangle(yolo_image, (x, y), (xmax, ymax), (0, 255, 0), 2)
+            cv2.putText(yolo_image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-    # Save the annotated image to the specified output folder
-    detected_image_path = os.path.join(image_output_dir, f"{image_name}_detected.jpg")
-    cv2.imwrite(detected_image_path, image)
-    
-    print(f"Detections saved to: {csv_path}")
-    print(f"Detected image saved to: {detected_image_path}")
+    print(f"YOLO detections CSV saved to: {yolo_csv_filename}")
 
-# Process all images in the folder
-def process_folder(folder_path, model, classes, csv_output_dir='New_real_detected_csv', image_output_dir='real_Detected_Images'):
+    # Save YOLO-only detected image
+    detected_image_path = os.path.join(image_output_dir, f"{os.path.splitext(os.path.basename(image_path))[0]}_detections.jpg")
+    cv2.imwrite(detected_image_path, yolo_image)
+    print(f"YOLO detections image saved to: {detected_image_path}")
+
+    # Overlay ground truth on the combined image
+    combined_image = yolo_image.copy()
+    with open(ground_truth_csv, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            xmin = int(row['xmin'])
+            ymin = int(row['ymin'])
+            xmax = int(row['xmax'])
+            ymax = int(row['ymax'])
+            label = row['class']
+
+            # Draw ground truth boxes (blue) on combined image
+            cv2.rectangle(combined_image, (xmin, ymin), (xmax, ymax), (255, 0, 0), 2)
+            cv2.putText(combined_image, f"GT: {label}", (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+    # Save combined image
+    combined_image_path = os.path.join(image_output_dir, f"{os.path.splitext(os.path.basename(image_path))[0]}_combined.jpg")
+    cv2.imwrite(combined_image_path, combined_image)
+    print(f"Combined image saved to: {combined_image_path}")
+
+
+
+def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='real_detected_Images', csv_output_dir='real_detected_CSVs'):
     for image_filename in os.listdir(folder_path):
         if image_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_path = os.path.join(folder_path, image_filename)
@@ -108,20 +126,44 @@ def process_folder(folder_path, model, classes, csv_output_dir='New_real_detecte
                 print(f"Could not load image: {image_path}")
                 continue
 
+            # Perform YOLO detection
             boxes, confidences, class_ids = detect_objects(image, model)
-            save_detections_to_csv(boxes, confidences, class_ids, classes, image_path, csv_output_dir, image_output_dir)
+
+            # Find corresponding ground truth CSV file
+            frame_number = extract_frame_number(image_filename)
+            ground_truth_csv = os.path.join(ground_truth_csv_folder, f"frame{frame_number}.csv")
+
+            if os.path.exists(ground_truth_csv):
+                save_detections_and_ground_truth(
+                    image_path, ground_truth_csv, boxes, confidences, class_ids, classes, 
+                    image_output_dir, csv_output_dir
+                )
+            else:
+                print(f"Ground truth CSV not found for {image_filename}")
 
 # Main function
-def main(folder_path):
+def main(folder_path, ground_truth_csv_folder):
     print("Starting batch YOLOv8 object detection...")
     
     yaml_path = "coco.yaml"
     classes = load_classes_from_yaml(yaml_path)
     
     model = load_yolo_model(weights_path="yolo11x.pt")
-    process_folder(folder_path, model, classes)
+    
+    # Process folder for YOLO detection and save results
+    process_folder(folder_path, model, classes, ground_truth_csv_folder)
+
+
+
+def extract_frame_number(filename):
+    # Extract the numeric part of the filename (e.g., 19 from "19.png")
+    match = re.search(r'\d+', filename)
+    if match:
+        return match.group(0)  # Return the numeric part as string
+    return None
 
 # Example usage
 if __name__ == "__main__":
     folder_path = "Images/real_frames"  # Folder containing multiple images
-    main(folder_path)
+    ground_truth_csv_folder = "Annotations/annotated_real"  # Folder containing ground truth CSVs
+    main(folder_path, ground_truth_csv_folder)
