@@ -136,9 +136,9 @@ def evaluate_and_plot_metrics(detections, confidences, class_ids, ground_truths,
     plot_images_with_metrics(real_image_path, synthetic_image_path, thresholds, real_tpr, real_fpr, real_tpr, real_fpr)
 
 def main():
-    real_detections_csv = "real_detected_csv/frame_7.csv"
+    real_detections_csv = r"real_detected_CSVs\frame_7_detections.csv"
     real_ground_truth_csv = "Annotations/annotated_real/frame7.csv"
-    synthetic_detections_csv = "synth_detected_csv/15.csv"
+    synthetic_detections_csv = r"syn_detected_CSVs\15_detections.csv"
     synthetic_ground_truth_csv = "Annotations/annotated_syn/frame15.csv"
     
     iou_threshold = 0.5
@@ -149,8 +149,8 @@ def main():
     synthetic_detections, synthetic_confidences, synthetic_class_ids = read_detections_from_csv(synthetic_detections_csv)
     synthetic_ground_truths = load_ground_truth(synthetic_ground_truth_csv)
 
-    real_image_path = "path_to_real_image/frame_7.jpg"  # Adjust the image path
-    synthetic_image_path = "path_to_synthetic_image/frame_15.jpg"  # Adjust the image path
+    real_image_path = r"Images\real_frames\frame_7.png"  # Adjust the image path
+    synthetic_image_path = r"Images\sd_frames\15.png"  # Adjust the image path
 
     evaluate_and_plot_metrics(real_detections, real_confidences, real_class_ids, real_ground_truths, iou_threshold, real_image_path, synthetic_image_path)
     evaluate_and_plot_metrics(synthetic_detections, synthetic_confidences, synthetic_class_ids, synthetic_ground_truths, iou_threshold, real_image_path, synthetic_image_path)

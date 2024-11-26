@@ -54,8 +54,8 @@ def save_detections_and_ground_truth(
     confidences, 
     class_ids, 
     classes, 
-    image_output_dir='real_Detected_Images', 
-    csv_output_dir='real_Detected_CSVs'
+    image_output_dir='Fog_output_test', 
+    csv_output_dir='Fog_test_csvs'
 ):
     # Create output directories if they don't exist
     os.makedirs(image_output_dir, exist_ok=True)
@@ -116,7 +116,7 @@ def save_detections_and_ground_truth(
 
 
 
-def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='real_detected_Images', csv_output_dir='real_detected_CSVs'):
+def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Fog_output_test', csv_output_dir='Fog_test_csvs'):
     for image_filename in os.listdir(folder_path):
         if image_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_path = os.path.join(folder_path, image_filename)
@@ -143,7 +143,7 @@ def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_o
 
 # Main function
 def main(folder_path, ground_truth_csv_folder):
-    print("Starting batch YOLOv8 object detection...")
+    print("Starting batch YOLO11x object detection...")
     
     yaml_path = "coco.yaml"
     classes = load_classes_from_yaml(yaml_path)
@@ -164,6 +164,6 @@ def extract_frame_number(filename):
 
 # Example usage
 if __name__ == "__main__":
-    folder_path = "Images/real_frames"  # Folder containing multiple images
-    ground_truth_csv_folder = "Annotations/annotated_real"  # Folder containing ground truth CSVs
+    folder_path = "Scenario_13_fog"  # Folder containing multiple images
+    ground_truth_csv_folder = "Annotation_tests"  # Folder containing ground truth CSVs
     main(folder_path, ground_truth_csv_folder)
