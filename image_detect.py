@@ -152,6 +152,7 @@ def main(folder_path, ground_truth_csv_folder):
     
     # Process folder for YOLO detection and save results
     process_folder(folder_path, model, classes, ground_truth_csv_folder)
+    print()
 
 
 
