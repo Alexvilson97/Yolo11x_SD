@@ -91,7 +91,7 @@ def calculate_tpr_fpr(detections, ground_truths, iou_threshold=0.5):
 
 def save_metrics(image_path, tpr, fpr, tp, fp, fn, metrics_output_dir="metrics"):
     os.makedirs(metrics_output_dir, exist_ok=True)
-    metrics_file = os.path.join(metrics_output_dir, "detection_metrics.csv")
+    metrics_file = os.path.join(metrics_output_dir, "syn_detection_metrics.csv")
     
     # Append metrics to CSV
     file_exists = os.path.isfile(metrics_file)
@@ -108,8 +108,8 @@ def save_detections_and_ground_truth(
     confidences, 
     class_ids, 
     classes, 
-    image_output_dir='real_Detected_Images', 
-    csv_output_dir='real_Detected_CSVs'
+    image_output_dir='syn_Detected_Images', 
+    csv_output_dir='syn_Detected_CSVs'
 ):
     # Create output directories if they don't exist
     os.makedirs(image_output_dir, exist_ok=True)
@@ -186,7 +186,7 @@ def save_detections_and_ground_truth(
     print(f"Metrics for {image_path} -> TPR: {tpr:.2f}, FPR: {fpr:.2f}, TP: {tp}, FP: {fp}, FN: {fn}")
 
 
-def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='real_detected_Images', csv_output_dir='real_detected_CSVs'):
+def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='syn_detected_Images', csv_output_dir='syn_detected_CSVs'):
     for image_filename in os.listdir(folder_path):
         if image_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_path = os.path.join(folder_path, image_filename)
@@ -234,6 +234,6 @@ def extract_frame_number(filename):
 
 # Example usage
 if __name__ == "__main__":
-    folder_path = "Images/real_frames"  # Folder containing multiple images
-    ground_truth_csv_folder = "Annotations/annotated_real"  # Folder containing ground truth CSVs
+    folder_path = "Images/sd_frames"  # Folder containing multiple images
+    ground_truth_csv_folder = "Annotations/annotated_syn"  # Folder containing ground truth CSVs
     main(folder_path, ground_truth_csv_folder)
