@@ -13,7 +13,7 @@ def load_yolo_model(weights_path="yolo11x.pt"):
     return model
 
 # Function to perform object detection
-def detect_objects(image, model, conf_threshold=0.1, nms_threshold=0.9):
+def detect_objects(image, model, conf_threshold=0.3, nms_threshold=0.9):
     results = model(image, imgsz=1280)
     
     boxes = []
@@ -243,6 +243,6 @@ def extract_frame_number(filename):
 
 # Example usage
 if __name__ == "__main__":
-    folder_path = "Images/fog_syn"  # Folder containing multiple images
-    ground_truth_csv_folder = "Annotations/Scenario_fog/Synth_annotated_fog"  # Folder containing ground truth CSVs
+    folder_path = r"Images\fog_syn"  # Folder containing multiple images_
+    ground_truth_csv_folder = r"Annotations\Scenario_fog\Synth_annotated_fog"  # Folder containing ground truth CSVs
     main(folder_path, ground_truth_csv_folder)

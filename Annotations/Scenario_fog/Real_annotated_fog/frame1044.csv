@@ -1,5 +1,5 @@
 filename,width,height,class,xmin,ymin,xmax,ymax
-RD_frame_1044_png.rf.0758c566b57b2483d9847c9afe0af5c0.jpg,1824,940,car,1019,473,1112,551
-RD_frame_1044_png.rf.0758c566b57b2483d9847c9afe0af5c0.jpg,1824,940,car,694,426,957,646
-RD_frame_1044_png.rf.0758c566b57b2483d9847c9afe0af5c0.jpg,1824,940,car,968,474,1008,512
-RD_frame_1044_png.rf.0758c566b57b2483d9847c9afe0af5c0.jpg,1824,940,car,951,479,977,503
+RD_frame_1044_png.,1824,940,truck,698,411,957,630
+RD_frame_1044_png.,1824,940,car,1019,473,1112,551
+RD_frame_1044_png.,1824,940,car,968,474,1008,512
+RD_frame_1044_png.,1824,940,car,950,482,975,503

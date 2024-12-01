@@ -101,12 +101,12 @@ def plot_normalized_fpr(real_fpr, synthetic_fpr, confidence_thresholds):
 # Main Program
 if __name__ == "__main__":
     # Load CSVs for real image
-    detection_file_real = 'New_real_detected_csv/frame_16.csv'  # Replace with your real detection CSV path
-    ground_truth_file_real = 'Annotations/annotated_real/frame16.csv'  # Replace with your real ground truth CSV path
+    detection_file_real = r'fog_real_detected_CSVs\RD_frame_1008_detections.csv'  # Replace with your real detection CSV path
+    ground_truth_file_real = r'Annotations\Scenario_fog\Real_annotated_fog\frame1008.csv'  # Replace with your real ground truth CSV path
     
     # Load CSVs for synthetic image
-    detection_file_synthetic = 'New_synth_detected_csv/21.csv'  # Replace with your synthetic detection CSV path
-    ground_truth_file_synthetic = 'Annotations/annotated_syn/frame21.csv'  # Replace with your synthetic ground truth CSV path
+    detection_file_synthetic = r'fog_syn_detected_CSVs\Frame_1008_detections.csv'  # Replace with your synthetic detection CSV path
+    ground_truth_file_synthetic = r'Annotations\Scenario_fog\Synth_annotated_fog\frame1008.csv'  # Replace with your synthetic ground truth CSV path
 
     # Read real image detections and ground truths
     detections_real = pd.read_csv(detection_file_real)[['xmin', 'ymin', 'xmax', 'ymax', 'class', 'confidence']].values.tolist()
