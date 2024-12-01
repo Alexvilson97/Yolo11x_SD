@@ -1,0 +1,3 @@
+Image,TPR,FPR,TP,FP,FN
+frame_1008.jpg,0.8,0.0,4,0,1
+frame_1044.jpg,0.75,0.4,3,2,1
