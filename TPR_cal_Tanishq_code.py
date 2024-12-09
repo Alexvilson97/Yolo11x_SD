@@ -112,7 +112,7 @@ def process_csv(csv_path, confidence_levels, iou_thresholds):
 
 
 # CSV files and parameters
-csv_files = [r"Annotations\Scenario_fog\Real-Day-Highway - Copy.csv"]
+csv_files = [r"Annotations\Scenario_fog\Synth_annotated_fog\frame1008.csv"]
 
 confidence_levels = np.arange(0.3, 1.0, 0.1)
 iou_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
