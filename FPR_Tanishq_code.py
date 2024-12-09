@@ -52,63 +52,72 @@ def calculate_fpr(fp, tn):
     """Calculate False Positive Rate (FPR)."""
     return fp / (fp + tn) if (fp + tn) > 0 else 0
 
-def plot_fpr_vs_confidence(csv_files, confidence_levels, output_csv):
-    """Calculate and plot FPR at different confidence levels and save results."""
+def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, output_csv):
+    """Calculate and plot FPR at different confidence levels for synthetic and real images."""
     results = []  # Store results for CSV
     plt.figure(figsize=(12, 8))
 
-    for csv_file in csv_files:
-        df = pd.read_csv(csv_file)
-        frame_numbers = df['Frame Number'].unique()
-
-        all_ground_truth_boxes = []
-        all_predicted_boxes = []
-
-        for frame_number in frame_numbers:
-            frame_data = df[df['Frame Number'] == frame_number]
-            gt_boxes = frame_data[['Ground Truth X-min', 'Ground Truth Y-min', 'Ground Truth X-max', 'Ground Truth Y-max', 'Ground Truth Class Name']].dropna().values.tolist()
-            pred_boxes = frame_data[['Predicted X-min', 'Predicted Y-min', 'Predicted X-max', 'Predicted Y-max', 'Confidence', 'Predicted Class Name']].dropna().values.tolist()
-            all_ground_truth_boxes.append(gt_boxes)
-            all_predicted_boxes.append(pred_boxes)
-
-        total_objects = sum(len(gt_boxes) for gt_boxes in all_ground_truth_boxes)
-        print(f"Debug: Total Objects={total_objects}")
-
+    def process_files(csv_files, label_prefix):
         fpr_values = []
-        for confidence in confidence_levels:
-            tp_total, fp_total, fn_total = 0, 0, 0
-            for gt_boxes, pred_boxes in zip(all_ground_truth_boxes, all_predicted_boxes):
-                # Filter predictions by confidence level
-                pred_boxes_filtered = [box for box in pred_boxes if box[4] >= confidence]
-                tp, fp, fn = process_frame(gt_boxes, pred_boxes_filtered)
-                tp_total += tp
-                fp_total += fp
-                fn_total += fn
+        for csv_file in csv_files:
+            df = pd.read_csv(csv_file)
+            frame_numbers = df['Frame Number'].unique()
 
-            # Calculate total negatives (TN)
-            tn_total = len([gt for gt in all_ground_truth_boxes for _ in gt]) - tp_total
-            print(f"Debug: Confidence={confidence:.2f} | TP: {tp_total}, FP: {fp_total}, FN: {fn_total}, TN: {tn_total}")
+            all_ground_truth_boxes = []
+            all_predicted_boxes = []
 
-            # Calculate FPR
-            fpr = calculate_fpr(fp_total, tn_total)
-            print(f"Debug: Confidence={confidence:.2f} | FPR: {fpr:.4f}")
+            for frame_number in frame_numbers:
+                frame_data = df[df['Frame Number'] == frame_number]
+                gt_boxes = frame_data[['Ground Truth X-min', 'Ground Truth Y-min', 'Ground Truth X-max', 'Ground Truth Y-max', 'Ground Truth Class Name']].dropna().values.tolist()
+                pred_boxes = frame_data[['Predicted X-min', 'Predicted Y-min', 'Predicted X-max', 'Predicted Y-max', 'Confidence', 'Predicted Class Name']].dropna().values.tolist()
+                all_ground_truth_boxes.append(gt_boxes)
+                all_predicted_boxes.append(pred_boxes)
 
-            fpr_values.append(fpr)
-            results.append({
-                'Confidence': confidence,
-                'FPR': fpr,
-                'TP': tp_total,
-                'FP': fp_total,
-                'FN': fn_total,
-                'Scenario': os.path.splitext(os.path.basename(csv_file))[0]
-            })
+            total_objects = sum(len(gt_boxes) for gt_boxes in all_ground_truth_boxes)
+            print(f"Debug: {label_prefix} Total Objects={total_objects}")
 
-        # Plot FPR vs Confidence for this dataset
-        plt.plot(confidence_levels, fpr_values, marker='o', label=os.path.splitext(os.path.basename(csv_file))[0])
-        for confidence, fpr in zip(confidence_levels, fpr_values):
-            plt.text(confidence, fpr, f"{fpr:.2f}", fontsize=8, ha='center')
+            file_fpr_values = []
+            for confidence in confidence_levels:
+                tp_total, fp_total, fn_total = 0, 0, 0
+                for gt_boxes, pred_boxes in zip(all_ground_truth_boxes, all_predicted_boxes):
+                    # Filter predictions by confidence level
+                    pred_boxes_filtered = [box for box in pred_boxes if box[4] >= confidence]
+                    tp, fp, fn = process_frame(gt_boxes, pred_boxes_filtered)
+                    tp_total += tp
+                    fp_total += fp
+                    fn_total += fn
 
-    plt.title("False Positive Rate vs Confidence Levels")
+                # Calculate total negatives (TN)
+                tn_total = len([gt for gt in all_ground_truth_boxes for _ in gt]) - tp_total
+                print(f"Debug: {label_prefix} Confidence={confidence:.2f} | TP: {tp_total}, FP: {fp_total}, FN: {fn_total}, TN: {tn_total}")
+
+                # Calculate FPR
+                fpr = calculate_fpr(fp_total, tn_total)
+                print(f"Debug: {label_prefix} Confidence={confidence:.2f} | FPR: {fpr:.4f}")
+
+                file_fpr_values.append(fpr)
+                results.append({
+                    'Confidence': confidence,
+                    'FPR': fpr,
+                    'TP': tp_total,
+                    'FP': fp_total,
+                    'FN': fn_total,
+                    'Scenario': label_prefix + os.path.splitext(os.path.basename(csv_file))[0]
+                })
+
+            # Plot FPR for this file
+            plt.plot(confidence_levels, file_fpr_values, marker='o', label=f"{label_prefix} {os.path.splitext(os.path.basename(csv_file))[0]}")
+            for confidence, fpr in zip(confidence_levels, file_fpr_values):
+                plt.text(confidence, fpr, f"{fpr:.2f}", fontsize=8, ha='center')
+
+    # Process synthetic images
+    process_files(synth_csv_files, "Synthetic")
+
+    # Process real images
+    process_files(real_csv_files, "Real")
+
+    # Finalize plot
+    plt.title("False Positive Rate vs Confidence Levels (Synthetic vs Real)")
     plt.xlabel("Confidence Levels")
     plt.ylabel("False Positive Rate (FPR)")
     plt.xticks(confidence_levels)
@@ -121,6 +130,15 @@ def plot_fpr_vs_confidence(csv_files, confidence_levels, output_csv):
     results_df = pd.DataFrame(results)
     results_df.to_csv(output_csv, index=False)
     print(f"Results saved to {output_csv}")
+
+if __name__ == "__main__":
+    synth_csv_files = ["Annotations/Scenario_fog/Synth_annotated_fog/frame1008.csv"]  # Synthetic CSV files
+    real_csv_files = ["Annotations/Scenario_real/Real_annotated/frame1008.csv"]  # Real CSV files
+    confidence_levels = np.arange(0.3, 1.0, 0.1)
+    output_csv = "fpr_results_combined.csv"
+
+    plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, output_csv)
+
 
 if __name__ == "__main__":
     csv_files = ["Annotations/Scenario_fog/Synth_annotated_fog/frame1008.csv"]
