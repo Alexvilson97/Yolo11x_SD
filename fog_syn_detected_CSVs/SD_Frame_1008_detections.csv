@@ -1,5 +1,0 @@
-Frame Number,Predicted X-min,Predicted Y-min,Predicted X-max,Predicted Y-max,confidence,class
-SD_Frame_1008.png,631,444,883,635,0.909901917,truck
-SD_Frame_1008.png,1028,477,1110,539,0.907501519,car
-SD_Frame_1008.png,984,454,1026,503,0.837000668,truck
-SD_Frame_1008.png,968,469,984,490,0.48309508,car

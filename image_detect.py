@@ -243,6 +243,6 @@ def extract_frame_number(filename):
 
 # Example usage
 if __name__ == "__main__":
-    folder_path = r"Images\fog_syn"  # Folder containing multiple images_
-    ground_truth_csv_folder = r"Annotations\Scenario_fog\Synth_annotated_fog"  # Folder containing ground truth CSVs
+    folder_path = "Images/fog_syn"
+    ground_truth_csv_folder =  "Annotations/Scenario_fog" #r"Annotations\Scenario_fog\Synth_annotated_fog"  # Folder containing ground truth CSVs 
     main(folder_path, ground_truth_csv_folder)
