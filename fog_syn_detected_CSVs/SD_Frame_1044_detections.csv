@@ -1,5 +1,5 @@
-filename,class,xmin,ymin,xmax,ymax,confidence
-SD_Frame_1044.png,car,1059,477,1136,534,0.9075543880462646
-SD_Frame_1044.png,car,1010,466,1050,503,0.7413556575775146
-SD_Frame_1044.png,truck,806,447,1019,630,0.735275149345398
-SD_Frame_1044.png,car,990,468,1013,486,0.4210502505302429
+Frame Number,PD_xmin,PD_ymin,PD_xmax,PD_ymax,confidence,class
+SD_Frame_1044.png,car,1059,477,1136,534,0.907554388
+SD_Frame_1044.png,car,1010,466,1050,503,0.741355658
+SD_Frame_1044.png,truck,806,447,1019,630,0.735275149
+SD_Frame_1044.png,car,990,468,1013,486,0.421050251

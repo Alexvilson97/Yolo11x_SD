@@ -1,5 +1,5 @@
-filename,width,height,class,xmin,ymin,xmax,ymax
-Frame_1044_png,1824,940,truck,806,445,1018,629
-Frame_1044_png,1824,940,car,1060,476,1136,534
-Frame_1044_png,1824,940,car,1013,465,1050,501
-Frame_1044_png,1824,940,car,990,468,1013,487
+Frame Number,GT_xmin,GT_ymin,GT_xmax,GT_ymax,class
+Frame_1044_png,806,445,1018,629,truck
+Frame_1044_png,1060,476,1136,534,car
+Frame_1044_png,1013,465,1050,501,car
+Frame_1044_png,990,468,1013,487,car

@@ -1,6 +1,6 @@
-filename,width,height,class,xmin,ymin,xmax,ymax
-Frame_1008_png,1824,940,truck,631,442,884,633
-Frame_1008_png,1824,940,car,984,454,1026,502
-Frame_1008_png,1824,940,car,1029,476,1110,538
-Frame_1008_png,1824,940,car,967,467,985,490
-Frame_1008_png,1824,940,car,924,469,943,486
+Frame Number,Ground Truth X-min,Ground Truth Y-min,Ground Truth X-max,Ground Truth Y-max,class
+Frame_1008_png,631,442,884,633,truck
+Frame_1008_png,984,454,1026,502,car
+Frame_1008_png,1029,476,1110,538,car
+Frame_1008_png,967,467,985,490,car
+Frame_1008_png,924,469,943,486,car

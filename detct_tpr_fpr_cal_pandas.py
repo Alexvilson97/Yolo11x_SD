@@ -41,26 +41,24 @@ def evaluate_detections(detections, ground_truths, iou_threshold=0.5):
     fn = len(ground_truths) - len(matched_gt)
     return tp, fp, fn
 
-# Function to calculate metrics (this is assumed from your context)
+# Function to calculate metrics
 def calculate_metrics(detections, ground_truths, confidence_thresholds, iou_threshold):
     precisions = []
     recalls = []
     tpr = []
     fpr = []
-    # Simulate precision, recall, TPR, FPR
     for threshold in confidence_thresholds:
-        tp = fp = fn = tn = 0  # Initialize counts
+        tp = fp = fn = tn = 0
         for det in detections:
-            if det[5] >= threshold:  # If the detection confidence is above the threshold
-                # Evaluate detection
+            if det[5] >= threshold:
                 tp_val, fp_val, fn_val = evaluate_detections([det], ground_truths, iou_threshold)
                 tp += tp_val
                 fp += fp_val
                 fn += fn_val
 
-        tn = len(ground_truths) - tp - fp  # Assuming that the rest are True Negatives
+        tn = len(ground_truths) - tp - fp
         tpr_value = tp / (tp + fn) if (tp + fn) != 0 else 0
-        fpr_value = fp / (fp + tn) if (fp + tn) != 0 else 0  # Fix FPR calculation
+        fpr_value = fp / (fp + tn) if (fp + tn) != 0 else 0
 
         precisions.append(tp / (tp + fp) if (tp + fp) != 0 else 0)
         recalls.append(tp / (tp + fn) if (tp + fn) != 0 else 0)
@@ -69,31 +67,25 @@ def calculate_metrics(detections, ground_truths, confidence_thresholds, iou_thre
 
     return precisions, recalls, tpr, fpr
 
-# Function to normalize values
-def normalize(values):
-    max_val = max(values)
-    min_val = min(values)
-    return [(val - min_val) / (max_val - min_val) if max_val > min_val else 0 for val in values]
-
-# Updated Plotting Functions
-def plot_normalized_tpr(real_tpr, synthetic_tpr, confidence_thresholds):
+# Plotting Functions
+def plot_tpr(real_tpr, synthetic_tpr, confidence_thresholds):
     plt.figure(figsize=(8, 6))
-    plt.plot(confidence_thresholds, real_tpr, marker='o', label='Normalized Real Image TPR')
-    plt.plot(confidence_thresholds, synthetic_tpr, marker='x', label='Normalized Synthetic Image TPR')
+    plt.plot(confidence_thresholds, real_tpr, marker='o', label='Real Image TPR')
+    plt.plot(confidence_thresholds, synthetic_tpr, marker='x', label='Synthetic Image TPR')
     plt.xlabel('Confidence Threshold')
-    plt.ylabel('Normalized TPR')
-    plt.title('Normalized TPR vs Confidence')
+    plt.ylabel('TPR')
+    plt.title('TPR vs Confidence')
     plt.grid()
     plt.legend()
     plt.show()
 
-def plot_normalized_fpr(real_fpr, synthetic_fpr, confidence_thresholds):
+def plot_fpr(real_fpr, synthetic_fpr, confidence_thresholds):
     plt.figure(figsize=(8, 6))
-    plt.plot(confidence_thresholds, real_fpr, marker='o', label='Normalized Real Image FPR', color='red')
-    plt.plot(confidence_thresholds, synthetic_fpr, marker='x', label='Normalized Synthetic Image FPR', color='orange')
+    plt.plot(confidence_thresholds, real_fpr, marker='o', label='Real Image FPR', color='red')
+    plt.plot(confidence_thresholds, synthetic_fpr, marker='x', label='Synthetic Image FPR', color='orange')
     plt.xlabel('Confidence Threshold')
-    plt.ylabel('Normalized FPR')
-    plt.title('Normalized FPR vs Confidence')
+    plt.ylabel('FPR')
+    plt.title('FPR vs Confidence')
     plt.grid()
     plt.legend()
     plt.show()
@@ -105,7 +97,7 @@ if __name__ == "__main__":
     ground_truth_file_real = r'Annotations\Scenario_fog\Real_annotated_fog\frame1008.csv'  # Replace with your real ground truth CSV path
     
     # Load CSVs for synthetic image
-    detection_file_synthetic = r'fog_syn_detected_CSVs\Frame_1008_detections.csv'  # Replace with your synthetic detection CSV path
+    detection_file_synthetic = r'fog_syn_detected_CSVs\SD_Frame_1008_detections.csv'  # Replace with your synthetic detection CSV path
     ground_truth_file_synthetic = r'Annotations\Scenario_fog\Synth_annotated_fog\frame1008.csv'  # Replace with your synthetic ground truth CSV path
 
     # Read real image detections and ground truths
@@ -130,12 +122,6 @@ if __name__ == "__main__":
         detections_synthetic, ground_truths_synthetic, confidence_thresholds, iou_threshold
     )
 
-    # Normalize TPR and FPR values
-    tpr_real_normalized = normalize(tpr_real)
-    tpr_synthetic_normalized = normalize(tpr_synthetic)
-    fpr_real_normalized = normalize(fpr_real)
-    fpr_synthetic_normalized = normalize(fpr_synthetic)
-
-    # Plot normalized TPR and FPR
-    plot_normalized_tpr(tpr_real_normalized, tpr_synthetic_normalized, confidence_thresholds)
-    plot_normalized_fpr(fpr_real_normalized, fpr_synthetic_normalized, confidence_thresholds)
+    # Plot TPR and FPR
+    plot_tpr(tpr_real, tpr_synthetic, confidence_thresholds)
+    plot_fpr(fpr_real, fpr_synthetic, confidence_thresholds)

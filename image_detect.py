@@ -92,7 +92,7 @@ def calculate_tpr_fpr(detections, ground_truths, iou_threshold=0.5):
 
 def save_metrics(image_path, tpr, fpr, tp, fp, fn, metrics_output_dir="metrics"):
     os.makedirs(metrics_output_dir, exist_ok=True)
-    metrics_file = os.path.join(metrics_output_dir, "fog_syn_detection_metrics.csv")
+    metrics_file = os.path.join(metrics_output_dir, "FOG_syn_detection_metrics.csv")
     
     # Append metrics to CSV
     file_exists = os.path.isfile(metrics_file)
