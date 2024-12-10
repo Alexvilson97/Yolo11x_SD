@@ -132,17 +132,12 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
     print(f"Results saved to {output_csv}")
 
 if __name__ == "__main__":
-    synth_csv_files = ["Annotations/Scenario_fog/Synth_annotated_fog/frame1008.csv"]  # Synthetic CSV files
-    real_csv_files = ["Annotations/Scenario_real/Real_annotated/frame1008.csv"]  # Real CSV files
+    synth_csv_files = [r"Annotations\frame15_syn_combined.csv"]  # Synthetic CSV files
+    real_csv_files = [r"Annotations\frame15_real_combined.csv"] # Real CSV files
     confidence_levels = np.arange(0.3, 1.0, 0.1)
     output_csv = "fpr_results_combined.csv"
 
     plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, output_csv)
 
 
-if __name__ == "__main__":
-    csv_files = [r"Annotations\frame15_real_combined.csv"]
-    confidence_levels = np.arange(0.3, 1.0, 0.1)
-    output_csv = "fpr_results.csv"
 
-    plot_fpr_vs_confidence(csv_files, confidence_levels, output_csv)

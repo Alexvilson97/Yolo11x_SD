@@ -59,23 +59,21 @@ def calculate_metrics(TP, FP, FN, total_objects):
     """Calculate precision, recall, FPR, FNR, and TPR."""
     precision = TP / max(TP + FP, 1)
     recall = TP / max(TP + FN, 1)
-    FPR = FP / max(total_objects - (TP + FN), 1)
-    FNR = FN / max(TP + FN, 1)
+#    FPR = FP / max(total_objects - (TP + FN), 1)
+#    FNR = FN / max(TP + FN, 1)
     TPR = recall
 
     return {
         'precision': precision,
         'recall': recall,
-        'FPR': FPR,
-        'FNR': FNR,
         'TPR': TPR,
         'TP': TP,
         'FP': FP,
         'FN': FN,
     }
 
-
 def process_csv(csv_path, confidence_levels, iou_thresholds):
+    """Process a single CSV file to calculate metrics."""
     combined_df = pd.read_csv(csv_path)
     frame_numbers = combined_df['Frame Number'].unique()
 
@@ -110,39 +108,52 @@ def process_csv(csv_path, confidence_levels, iou_thresholds):
 
     return metrics_results
 
-
-# CSV files and parameters
-csv_files = [r"Annotations\frame15_real_combined.csv"]
+# Define CSV files for real and synthetic data
+real_csv_files = [r"Annotations\frame15_real_combined.csv"]
+synthetic_csv_files = [r"Annotations\frame15_syn_combined.csv"]
 
 confidence_levels = np.arange(0.3, 1.0, 0.1)
 iou_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
+def process_files(csv_files, data_type):
+    """Process a list of CSV files and add a 'data_type' column."""
+    metrics_results = []
+    for csv_path in csv_files:
+        scenario_metrics = process_csv(csv_path, confidence_levels, iou_thresholds)
+
+        for result in scenario_metrics:
+            result['scenario'] = os.path.splitext(os.path.basename(csv_path))[0]
+            result['data_type'] = data_type  # Add real/synthetic label
+
+        metrics_results.extend(scenario_metrics)
+    return metrics_results
+
+
+# Process real and synthetic CSV files
 all_metrics_results = []
+all_metrics_results.extend(process_files(real_csv_files, "Real"))
+all_metrics_results.extend(process_files(synthetic_csv_files, "Synthetic"))
 
-for csv_path in csv_files:
-    metrics_results = process_csv(csv_path, confidence_levels, iou_thresholds)
-
-    for result in metrics_results:
-        result['scenario'] = os.path.splitext(os.path.basename(csv_path))[0]
-
-    all_metrics_results.extend(metrics_results)
-
-# Create DataFrame from all results
+# Create a single DataFrame from all results
 df_metrics = pd.DataFrame(all_metrics_results)
 
-# Save the DataFrame to a CSV file
-df_metrics.to_csv("file.csv", index=False)
+# Save the combined DataFrame to a single CSV file
+output_csv_path = "combined_tpr_metrics.csv"
+df_metrics.to_csv(output_csv_path, index=False)
+
+print(f"Metrics saved to {output_csv_path}")
 
 # Plot the graphs
 plt.figure(figsize=(16, 10))
 
-for scenario in df_metrics['scenario'].unique():
-    df_subset = df_metrics[df_metrics['scenario'] == scenario]
-    plt.plot(df_subset['confidence'], df_subset['TPR'], marker='o', label=scenario)
-    for i, tpr in enumerate(df_subset['TPR']):
-        plt.text(df_subset['confidence'].values[i], tpr, f"{tpr:.2f}", fontsize=10)
+# Plot TPR vs Confidence for Real and Synthetic data
+for (scenario, data_type), group in df_metrics.groupby(['scenario', 'data_type']):
+    label = f"{scenario} ({data_type})"
+    plt.plot(group['confidence'], group['TPR'], marker='o', label=label)
+    for i, tpr in enumerate(group['TPR']):
+        plt.text(group['confidence'].values[i], tpr, f"{tpr:.2f}", fontsize=10)
 
-plt.title("True Positive Rate vs Confidence Levels")
+plt.title("True Positive Rate vs Confidence Levels (Real vs Synthetic)")
 plt.xlabel("Confidence Levels")
 plt.ylabel("True Positive Rate (TPR)")
 plt.legend()
