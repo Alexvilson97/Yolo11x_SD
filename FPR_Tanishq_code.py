@@ -57,7 +57,7 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
     results = []  # Store results for CSV
     plt.figure(figsize=(12, 8))
 
-    def process_files(csv_files, label_prefix):
+    def process_files(csv_files, label_prefix, color):
         fpr_values = []
         for csv_file in csv_files:
             df = pd.read_csv(csv_file)
@@ -105,25 +105,26 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
                     'Scenario': label_prefix + os.path.splitext(os.path.basename(csv_file))[0]
                 })
 
-            # Plot FPR for this file
-            plt.plot(confidence_levels, file_fpr_values, marker='o', label=f"{label_prefix} {os.path.splitext(os.path.basename(csv_file))[0]}")
+            # Plot FPR for this file with specified color
+            plt.plot(confidence_levels, file_fpr_values, marker='o', label=f"{label_prefix} {os.path.splitext(os.path.basename(csv_file))[0]}", color=color)
             for confidence, fpr in zip(confidence_levels, file_fpr_values):
-                plt.text(confidence, fpr, f"{fpr:.2f}", fontsize=8, ha='center')
+                plt.text(confidence, fpr, f"{fpr:.2f}", fontsize=12, ha='center')
 
-    # Process synthetic images
-    process_files(synth_csv_files, "Synthetic")
+    # Process synthetic images with orange color
+    process_files(synth_csv_files, "Synthetic", "orange")
 
-    # Process real images
-    process_files(real_csv_files, "Real")
+    # Process real images with blue color
+    process_files(real_csv_files, "Real", "blue")
 
     # Finalize plot
-    plt.title("False Positive Rate vs Confidence Levels (Synthetic vs Real)")
-    plt.xlabel("Confidence Levels")
-    plt.ylabel("False Positive Rate (FPR)")
-    plt.xticks(confidence_levels)
+    plt.title("False Positive Rate vs Confidence Levels", fontsize=16)  # Title font size
+    plt.xlabel("Confidence Levels", fontsize=14)  # X-axis label font size
+    plt.ylabel("False Positive Rate (FPR)", fontsize=14)  # Y-axis label font size
+    plt.xticks(confidence_levels, fontsize=12)  # X-axis tick font size
+    plt.yticks(fontsize=12)  # Y-axis tick font size
     plt.ylim(0, 1)
     plt.grid(True)
-    plt.legend()
+    plt.legend(fontsize=12)  # Legend font size
     plt.show()
 
     # Save results to CSV
@@ -131,9 +132,10 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
     results_df.to_csv(output_csv, index=False)
     print(f"Results saved to {output_csv}")
 
+
 if __name__ == "__main__":
-    synth_csv_files = [r"Annotations\frame15_syn_combined.csv"]  # Synthetic CSV files
-    real_csv_files = [r"Annotations\frame15_real_combined.csv"] # Real CSV files
+    real_csv_files = [r"Annotations\frame15_RD.csv"] # Real CSV files
+    synth_csv_files = [r"Annotations\frame15_SD.csv"]  # Synthetic CSV files
     confidence_levels = np.arange(0.3, 1.0, 0.1)
     output_csv = "fpr_results_combined.csv"
 

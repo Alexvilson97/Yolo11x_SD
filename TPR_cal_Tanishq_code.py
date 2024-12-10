@@ -109,8 +109,8 @@ def process_csv(csv_path, confidence_levels, iou_thresholds):
     return metrics_results
 
 # Define CSV files for real and synthetic data
-real_csv_files = [r"Annotations\frame15_real_combined.csv"]
-synthetic_csv_files = [r"Annotations\frame15_syn_combined.csv"]
+real_csv_files = [r"Annotations\frame15_RD.csv"]
+synthetic_csv_files = [r"Annotations\frame15_SD.csv"]
 
 confidence_levels = np.arange(0.3, 1.0, 0.1)
 iou_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -144,7 +144,7 @@ df_metrics.to_csv(output_csv_path, index=False)
 print(f"Metrics saved to {output_csv_path}")
 
 # Plot the graphs
-plt.figure(figsize=(16, 10))
+plt.figure(figsize=(12, 8))
 
 # Plot TPR vs Confidence for Real and Synthetic data
 for (scenario, data_type), group in df_metrics.groupby(['scenario', 'data_type']):
@@ -153,9 +153,9 @@ for (scenario, data_type), group in df_metrics.groupby(['scenario', 'data_type']
     for i, tpr in enumerate(group['TPR']):
         plt.text(group['confidence'].values[i], tpr, f"{tpr:.2f}", fontsize=10)
 
-plt.title("True Positive Rate vs Confidence Levels (Real vs Synthetic)")
-plt.xlabel("Confidence Levels")
-plt.ylabel("True Positive Rate (TPR)")
+plt.title("True Positive Rate vs Confidence Levels", fontsize=16)
+plt.xlabel("Confidence Levels", fontsize=14)
+plt.ylabel("True Positive Rate (TPR)", fontsize=14)
 plt.legend()
 plt.grid(True)
 plt.show()
