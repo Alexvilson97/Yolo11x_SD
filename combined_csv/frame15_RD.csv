@@ -1,0 +1,12 @@
+Frame Number,Predicted Class Name,Predicted X-min,Predicted Y-min,Predicted X-max,Predicted Y-max,Confidence,Ground Truth Class Name,Ground Truth X-min,Ground Truth Y-min,Ground Truth X-max,Ground Truth Y-max,IoU,Image Path
+Frame_15,truck,1237,398,1322,509,0.878456175,truck,1239,396,1322,507,,
+Frame_15,truck,1625,378,1709,564,0.85956037,traffic light,1103,422,1112,442,,
+Frame_15,car,999,464,1027,486,0.804910481,car,88,414,284,514,,
+Frame_15,car,88,417,284,515,0.690763593,car,998,463,1027,486,,
+Frame_15,truck,1491,453,1617,518,0.579635143,car,1490,451,1613,517,,
+Frame_15,person,1048,460,1065,495,0.545443296,car,860,456,915,509,,
+Frame_15,traffic light,1104,423,1111,445,0.500652194,car,926,462,945,483,,
+Frame_15,traffic light,913,424,922,445,0.261066914,person,1048,456,1071,498,,
+Frame_15,car,936,454,960,471,0.259511143,person,948,453,963,488,,
+Frame_15,traffic light,923,425,933,445,0.257404596,,,,,,,
+Frame_15,car,839,471,903,510,0.252272189,,,,,,,

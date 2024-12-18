@@ -2,10 +2,8 @@ import os
 import csv
 import cv2
 from ultralytics import YOLO
-import numpy as np
 import yaml
 import re
-import chardet
 
 # Load YOLO model
 def load_yolo_model(weights_path="yolo11x.pt"):
@@ -13,7 +11,7 @@ def load_yolo_model(weights_path="yolo11x.pt"):
     return model
 
 # Function to perform object detection
-def detect_objects(image, model, conf_threshold=0.3, nms_threshold=0.9):
+def detect_objects(image, model, conf_threshold=0.1, nms_threshold=0.9):
     results = model(image, imgsz=1280)
     
     boxes = []
@@ -48,67 +46,6 @@ def load_classes_from_yaml(yaml_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
     return data['names']
-
-def calculate_iou(box1, box2):
-    # Calculate the Intersection over Union (IoU) between two bounding boxes
-    x1 = max(box1[0], box2[0])
-    y1 = max(box1[1], box2[1])
-    x2 = min(box1[0] + box1[2], box2[0] + box2[2])
-    y2 = min(box1[1] + box1[3], box2[1] + box2[3])
-
-    intersection = max(0, x2 - x1) * max(0, y2 - y1)
-    box1_area = box1[2] * box1[3]
-    box2_area = box2[2] * box2[3]
-    union = box1_area + box2_area - intersection
-
-    return intersection / union if union > 0 else 0
-
-def calculate_tpr_fpr(detections, ground_truths, iou_threshold=0.5):
-    # Match detections to ground truths using IoU
-    matched = set()
-    tp = 0
-    fp = 0
-    fn = len(ground_truths)
-
-    for det_idx, det in enumerate(detections):
-        for gt_idx, gt in enumerate(ground_truths):
-            if gt_idx in matched:
-                continue
-
-            iou = calculate_iou(det, gt)
-            if iou >= iou_threshold:
-                tp += 1
-                matched.add(gt_idx)
-                break
-        else:
-            # Detection does not match any ground truth
-            fp += 1
-
-    fn -= tp  # Remaining unmatched ground truths
-    tpr = tp / (tp + fn) if (tp + fn) > 0 else 0
-    fpr = fp / (fp + tp) if (fp + tp) > 0 else 0
-
-    return tpr, fpr, tp, fp, fn
-
-def save_metrics(image_path, tpr, fpr, tp, fp, fn, metrics_output_dir="metrics"):
-    os.makedirs(metrics_output_dir, exist_ok=True)
-    metrics_file = os.path.join(metrics_output_dir, "FOG_syn_detection_metrics.csv")
-    
-    # Append metrics to CSV
-    file_exists = os.path.isfile(metrics_file)
-    with open(metrics_file, mode='a', newline='') as csv_file:
-        writer = csv.writer(csv_file)
-        if not file_exists:
-            writer.writerow(['Image', 'TPR', 'FPR', 'TP', 'FP', 'FN'])
-        writer.writerow([os.path.basename(image_path), tpr, fpr, tp, fp, fn])
-
-def detect_file_encoding(file_path):
-    """
-    Detect the encoding of a file using chardet.
-    """
-    with open(file_path, 'rb') as f:
-        result = chardet.detect(f.read())
-    return result.get('encoding', 'utf-8')
 
 def save_detections_and_ground_truth(
     image_path, 
@@ -176,23 +113,7 @@ def save_detections_and_ground_truth(
     combined_image_path = os.path.join(image_output_dir, f"{os.path.splitext(os.path.basename(image_path))[0]}_combined.jpg")
     cv2.imwrite(combined_image_path, combined_image)
     print(f"Combined image saved to: {combined_image_path}")
-    
-    ground_truth_boxes = []
-    with open(ground_truth_csv, 'r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            xmin = int(row['xmin'])
-            ymin = int(row['ymin'])
-            xmax = int(row['xmax'])
-            ymax = int(row['ymax'])
-            ground_truth_boxes.append([xmin, ymin, xmax - xmin, ymax - ymin])
 
-    # Calculate TPR and FPR
-    tpr, fpr, tp, fp, fn = calculate_tpr_fpr(boxes, ground_truth_boxes)
-
-    # Save metrics
-    save_metrics(image_path, tpr, fpr, tp, fp, fn)
-    print(f"Metrics for {image_path} -> TPR: {tpr:.2f}, FPR: {fpr:.2f}, TP: {tp}, FP: {fp}, FN: {fn}")
 
 
 def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='fog_syn_detected_Images', csv_output_dir='fog_syn_detected_CSVs'):
@@ -209,8 +130,12 @@ def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_o
             boxes, confidences, class_ids = detect_objects(image, model)
 
             # Find corresponding ground truth CSV file
-            frame_number = extract_frame_number(image_filename)
-            ground_truth_csv = os.path.join(ground_truth_csv_folder, f"frame{frame_number}.csv")
+            frame_identifier = extract_frame_number(image_filename)
+            if frame_identifier:
+                ground_truth_csv = os.path.join(ground_truth_csv_folder, f"{frame_identifier}.csv")
+            else:
+                print(f"Could not extract frame identifier from {image_filename}")
+                continue
 
             if os.path.exists(ground_truth_csv):
                 save_detections_and_ground_truth(
@@ -235,14 +160,14 @@ def main(folder_path, ground_truth_csv_folder):
 
 
 def extract_frame_number(filename):
-    # Extract the numeric part of the filename (e.g., 19 from "19.png")
-    match = re.search(r'\d+', filename)
+    # Match the full frame identifier including `_V100`
+    match = re.search(r'Frame_\d+(_V\d+)?', filename)
     if match:
-        return match.group(0)  # Return the numeric part as string
+        return match.group(0)  # Return the matched frame identifier
     return None
 
 # Example usage
 if __name__ == "__main__":
-    folder_path = "Images/fog_syn"
-    ground_truth_csv_folder =  "Annotations/Scenario_fog" #r"Annotations\Scenario_fog\Synth_annotated_fog"  # Folder containing ground truth CSVs 
+    folder_path = "Images/fog_syn"  # Folder containing multiple images
+    ground_truth_csv_folder = "Annotations/Scenario_fog_syn"  # Folder containing ground truth CSVs
     main(folder_path, ground_truth_csv_folder)
