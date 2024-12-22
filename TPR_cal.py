@@ -109,8 +109,8 @@ def process_csv(csv_path, confidence_levels, iou_thresholds):
     return metrics_results
 
 # Define CSV files for real and synthetic data
-real_csv_files = [r"combined_csv\Higway_sunny\RD_highway_sunny.csv"]
-synthetic_csv_files = [r"combined_csv\Higway_sunny\SD_highway_sunny.csv"]
+real_csv_files = [r"combined_csv\Fog\RD_FOG_combined.csv"]
+synthetic_csv_files = [r"combined_csv\Fog\SD_FOG_combined.csv"]
 
 confidence_levels = np.arange(0.3, 1.0, 0.1)
 iou_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]

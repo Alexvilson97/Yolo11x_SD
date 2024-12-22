@@ -1,0 +1,16 @@
+Frame Number,Predicted Class Name,Predicted X-min,Predicted Y-min,Predicted X-max,Predicted Y-max,Confidence,Ground Truth Class Name,Ground Truth X-min,Ground Truth Y-min,Ground Truth X-max,Ground Truth Y-max
+Frame_720.png,car,881,479,943,533,0.882743001,Car,881,476,944,532
+Frame_720.png,car,599,487,626,506,0.271965683,Car,599,484,631,505
+Frame_720.png,,,,,,,Car,684,479,707,496
+Frame_900.png,truck,138,392,637,730,0.935334384,truck,134,380,636,728
+Frame_900.png,car,891,468,971,535,0.892892778,Car,894,466,972,533
+Frame_900.png,boat,140,383,434,486,0.404243678,Car,866,482,884,494
+Frame_1008.png,car,993,478,1079,551,0.904372871,truck,571,405,880,644
+Frame_1008.png,truck,572,411,879,645,0.848416269,Car,994,476,1080,550
+Frame_1008.png,car,966,478,1002,514,0.697609425,Car,965,476,1003,513
+Frame_1008.png,car,954,486,970,504,0.501882553,Car,954,481,972,505
+Frame_1008.png,,,,,,,Car,926,489,940,500
+Frame_1044.png,car,1018,474,1111,552,0.899186313,truck,698,411,957,630
+Frame_1044.png,truck,705,423,954,632,0.895799696,Car,1019,473,1112,551
+Frame_1044.png,car,968,475,1007,513,0.683965683,Car,968,474,1008,512
+Frame_1044.png,person,866,449,906,477,0.388415635,,,,,
