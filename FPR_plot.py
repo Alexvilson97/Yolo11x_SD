@@ -134,8 +134,8 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
 
 
 if __name__ == "__main__":
-    real_csv_files = [r"combined_csv\Higway_sunny\RD_highway_sunny.csv"] # Real CSV files
-    synth_csv_files = [r"combined_csv\Higway_sunny\SD_highway_sunny.csv"] # Synthetic CSV files
+    real_csv_files = ["combined_csv/Night_Highway/RD_night_highway.csv"]
+    synth_csv_files = ["combined_csv/Night_Highway/SD_night_highway.csv"]
     confidence_levels = np.arange(0.3, 1.0, 0.1)
     output_csv = "fpr_results_combined.csv"
 
