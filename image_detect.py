@@ -54,8 +54,8 @@ def save_detections_and_ground_truth(
     confidences, 
     class_ids, 
     classes, 
-    image_output_dir='fog_syn_Detected_Images', 
-    csv_output_dir='fog_syn_Detected_CSVs'
+    image_output_dir='Detection_results\City_sunny\RD', 
+    csv_output_dir='Detection_results\City_sunny\RD'
 ):
     # Create output directories if they don't exist
     os.makedirs(image_output_dir, exist_ok=True)
@@ -107,7 +107,7 @@ def save_detections_and_ground_truth(
 
             # Draw ground truth boxes (blue) on combined image
             cv2.rectangle(combined_image, (xmin, ymin), (xmax, ymax), (255, 0, 0), 2)
-            cv2.putText(combined_image, f"GT: {label}", (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            cv2.putText(combined_image, f"GT: {label}", (xmin, ymax + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
     # Save combined image
     combined_image_path = os.path.join(image_output_dir, f"{os.path.splitext(os.path.basename(image_path))[0]}_combined.jpg")
@@ -115,8 +115,7 @@ def save_detections_and_ground_truth(
     print(f"Combined image saved to: {combined_image_path}")
 
 
-
-def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='fog_syn_detected_Images', csv_output_dir='fog_syn_detected_CSVs'):
+def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Detection_results\City_sunny\RD\Images', csv_output_dir='Detection_results\City_sunny\RD\CSV'):
     for image_filename in os.listdir(folder_path):
         if image_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_path = os.path.join(folder_path, image_filename)
@@ -158,7 +157,6 @@ def main(folder_path, ground_truth_csv_folder):
     process_folder(folder_path, model, classes, ground_truth_csv_folder)
 
 
-
 def extract_frame_number(filename):
     # Match the full frame identifier including `_V100`
     match = re.search(r'Frame_\d+(_V\d+)?', filename)
@@ -168,6 +166,6 @@ def extract_frame_number(filename):
 
 # Example usage
 if __name__ == "__main__":
-    folder_path = "Images/fog_syn"  # Folder containing multiple images
-    ground_truth_csv_folder = "Annotations/Scenario_fog_syn"  # Folder containing ground truth CSVs
+    folder_path = r"Images\City_sunny\RD"  # Folder containing multiple images
+    ground_truth_csv_folder = r"Annotations\Scene_5\RD_CSV"  # Folder containing ground truth CSVs
     main(folder_path, ground_truth_csv_folder)

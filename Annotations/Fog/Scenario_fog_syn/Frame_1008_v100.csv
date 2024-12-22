@@ -1,0 +1,6 @@
+filename,width,height,class,xmin,ymin,xmax,ymax
+Frame_1008-V100_png,1824,940,car,1029,476,1110,538
+Frame_1008-V100_png,1824,940,truck,631,441,883,633
+Frame_1008-V100_png,1824,940,truck,987,455,1029,507
+Frame_1008-V100_png,1824,940,car,922,464,953,495
+Frame_1008-V100_png,1824,940,car,967,468,993,491

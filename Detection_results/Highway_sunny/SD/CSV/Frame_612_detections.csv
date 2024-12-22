@@ -1,0 +1,4 @@
+filename,class,xmin,ymin,xmax,ymax,confidence
+Frame_612.png,car,672,602,722,637,0.8628584742546082
+Frame_612.png,truck,769,561,866,674,0.8521581888198853
+Frame_612.png,truck,839,552,920,643,0.7617771029472351

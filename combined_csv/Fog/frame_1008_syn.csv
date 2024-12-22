@@ -1,0 +1,6 @@
+Frame Number,Predicted Class Name,Predicted X-min,Predicted Y-min,Predicted X-max,Predicted Y-max,Confidence,Ground Truth Class Name,Ground Truth X-min,Ground Truth Y-min,Ground Truth X-max,Ground Truth Y-max
+Frame_1008,truck,631,444,883,635,0.909901917,car,1029,476,1110,538
+Frame_1008,car,1028,477,1110,539,0.907501519,truck,631,441,883,633
+Frame_1008,truck,984,454,1026,503,0.837000906,truck,987,455,1029,507
+Frame_1008,car,968,469,984,490,0.483094633,car,922,464,953,495
+Frame_1008,,,,,,,car,967,468,993,491
