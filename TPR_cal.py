@@ -109,13 +109,8 @@ def process_csv(csv_path, confidence_levels, iou_thresholds):
     return metrics_results
 
 # Define CSV files for real and synthetic data
-<<<<<<< HEAD
-real_csv_files = [r"combined_csv\Fog\RD_FOG_combined.csv"]
-synthetic_csv_files = [r"combined_csv\Fog\SD_FOG_combined.csv"]
-=======
-real_csv_files = ["combined_csv/City_sunny/RD_City_Sunny.csv"]
-synthetic_csv_files = ["combined_csv/City_sunny/SD_City_Sunny.csv"]
->>>>>>> 114f846ea46adebdf9b402d3a0e4e9607568c393
+real_csv_files = [r"combined_csv\Night_Highway\RD_night_highway.csv"]
+synthetic_csv_files = [r"combined_csv\Night_Highway\SD_night_highway.csv"]
 
 confidence_levels = np.arange(0.3, 1.0, 0.1)
 iou_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -157,6 +152,9 @@ for (scenario, data_type), group in df_metrics.groupby(['scenario', 'data_type']
     plt.plot(group['confidence'], group['TPR'], marker='o', label=label)
     for i, tpr in enumerate(group['TPR']):
         plt.text(group['confidence'].values[i], tpr, f"{tpr:.2f}", fontsize=10)
+
+# Set y-axis limits to ensure normalization
+plt.ylim(0, 1)
 
 plt.title("True Positive Rate vs Confidence Levels", fontsize=16)
 plt.xlabel("Confidence Levels", fontsize=14)

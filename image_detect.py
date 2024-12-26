@@ -54,13 +54,8 @@ def save_detections_and_ground_truth(
     confidences, 
     class_ids, 
     classes, 
-<<<<<<< HEAD
     image_output_dir='Detection_results\FOG_highway\SD', 
     csv_output_dir='Detection_results\FOG_highway\SD'
-=======
-    image_output_dir='Detection_results/Night_Highway/RD' , 
-    csv_output_dir='Detection_results/Night_Highway/RD'
->>>>>>> 114f846ea46adebdf9b402d3a0e4e9607568c393
 ):
     # Create output directories if they don't exist
     os.makedirs(image_output_dir, exist_ok=True)
@@ -120,11 +115,7 @@ def save_detections_and_ground_truth(
     print(f"Combined image saved to: {combined_image_path}")
 
 
-<<<<<<< HEAD
 def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Detection_results\FOG_highway\SD\Images', csv_output_dir='Detection_results\FOG_highway\SD\CSV'):
-=======
-def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Detection_results/Night_Highway/RD/Images', csv_output_dir='Detection_results/Night_Highway/RD/CSV'):
->>>>>>> 114f846ea46adebdf9b402d3a0e4e9607568c393
     for image_filename in os.listdir(folder_path):
         if image_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_path = os.path.join(folder_path, image_filename)
@@ -175,11 +166,6 @@ def extract_frame_number(filename):
 
 # Example usage
 if __name__ == "__main__":
-<<<<<<< HEAD
     folder_path = r"Images\fog_Highway\SD"  # Folder containing multiple images
     ground_truth_csv_folder = r"Annotations\Fog_highway\SD_CSV"  # Folder containing ground truth CSVs
-=======
-    folder_path = "Images/Night_highway_scenario/RD"  # Folder containing multiple images
-    ground_truth_csv_folder = "Annotations/Night_Highway/RD_CSV"  # Folder containing ground truth CSVs
->>>>>>> 114f846ea46adebdf9b402d3a0e4e9607568c393
     main(folder_path, ground_truth_csv_folder)
