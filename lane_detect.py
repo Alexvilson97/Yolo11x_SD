@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the image
-image_path = "Images/City_sunny/SD/Frame_540.png"
+image_path = "Images/fog_Highway/Frame_900_V100.png"
 image = cv2.imread(image_path)
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -11,7 +11,7 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 blur = cv2.GaussianBlur(gray, (5, 5), 0)
 
 # Use Canny edge detection
-edges = cv2.Canny(blur, 100, 200)
+edges = cv2.Canny(blur, 50, 150)
 
 # Define a region of interest (ROI)
 def region_of_interest(img):
@@ -42,6 +42,30 @@ def calculate_line_confidence(line):
     confidence = min(length / 400, 1.0)  # Normalize confidence, length over arbitrary threshold (e.g., 400 pixels)
     return length, confidence
 
+
+# Function to filter lines based on slope and length
+def filter_lines(lines, min_slope=0.2, max_slope=2.0, min_length=100):
+    filtered_lines = []
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        
+        # Calculate the slope of the line (avoid vertical lines with infinite slope)
+        if x2 - x1 != 0:
+            slope = (y2 - y1) / (x2 - x1)
+            length = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+            
+            # Apply slope and length filters
+            if min_slope <= abs(slope) <= max_slope and length >= min_length:
+                filtered_lines.append(line)
+    return filtered_lines
+
+# Filter the detected lines (for now, without position-based filter)
+if lines is not None:
+    lines = filter_lines(lines)
+# Filter the detected lines
+if lines is not None:
+    lines = filter_lines(lines)
+
 # Draw the detected lines and show confidence
 output = np.copy(image)
 if lines is not None:
@@ -59,7 +83,7 @@ if lines is not None:
         cv2.putText(output, f'{confidence*100:.1f}%', (x1, y1 - 10), font, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
 
 # Save the output image with lane detection and confidence scores
-output_image_path = "city_sunny_frame540_sd.jpg"
+output_image_path = "fog_highway_frame900_sd.jpg"
 cv2.imwrite(output_image_path, output)
 
 # Display the results
