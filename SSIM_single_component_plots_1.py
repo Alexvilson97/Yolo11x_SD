@@ -5,9 +5,9 @@ from skimage.metrics import structural_similarity as ssim
 import matplotlib.pyplot as plt
 
 # Paths for real and synthetic images
-real_folder = r"Images\real_frames"
-synthetic_folder = r"Images\sd_frames"
-output_folder = r"SSIM_outputs"
+real_folder = "Images/trial/RD"
+synthetic_folder = "Images/trial/SD"
+output_folder = "SSIM_outputs"
 
 # Create the output directory if it doesn't exist
 os.makedirs(output_folder, exist_ok=True)
