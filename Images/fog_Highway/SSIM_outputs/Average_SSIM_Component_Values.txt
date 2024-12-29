@@ -1,0 +1,7 @@
+=== Average SSIM Component Values ===
+Real Luminance: 1.5827
+Synthetic Luminance: 3.2825
+Real Contrast: 0.6048
+Synthetic Contrast: 0.6193
+Real Structure: 0.9644
+Synthetic Structure: 0.9434
