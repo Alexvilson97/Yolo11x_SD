@@ -1,0 +1,10 @@
+filename,width,height,class,xmin,ymin,xmax,ymax
+Frame_1,1820,940,Car,193,468,391,633
+Frame_1,1820,940,Car,830,473,904,525
+Frame_1,1820,940,Car,921,468,1071,534
+Frame_1,1820,940,Car,350,444,502,592
+Frame_1,1820,940,Car,772,471,815,508
+Frame_1,1820,940,Car,751,472,784,502
+Frame_1,1820,940,Traffic light,1002,359,1038,396
+Frame_1,1820,940,Traffic light,441,362,473,398
+Frame_1,1820,940,Person,1114,480,1137,562

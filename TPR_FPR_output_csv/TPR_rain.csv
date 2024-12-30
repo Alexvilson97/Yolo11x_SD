@@ -1,0 +1,15 @@
+precision,recall,TPR,TP,FP,FN,confidence,scenario,data_type
+0.875,0.875,0.875,28,4,4,0.3,RD_Rain_combined,Real
+0.9310344827586207,0.84375,0.84375,27,2,5,0.4,RD_Rain_combined,Real
+0.9310344827586207,0.84375,0.84375,27,2,5,0.5,RD_Rain_combined,Real
+0.9259259259259259,0.78125,0.78125,25,2,7,0.6000000000000001,RD_Rain_combined,Real
+1.0,0.625,0.625,20,0,12,0.7000000000000002,RD_Rain_combined,Real
+1.0,0.5625,0.5625,18,0,14,0.8000000000000003,RD_Rain_combined,Real
+1.0,0.21875,0.21875,7,0,25,0.9000000000000001,RD_Rain_combined,Real
+1.0,0.71875,0.71875,23,0,9,0.3,SD_Rain_combined,Synthetic
+1.0,0.71875,0.71875,23,0,9,0.4,SD_Rain_combined,Synthetic
+1.0,0.71875,0.71875,23,0,9,0.5,SD_Rain_combined,Synthetic
+1.0,0.65625,0.65625,21,0,11,0.6000000000000001,SD_Rain_combined,Synthetic
+1.0,0.59375,0.59375,19,0,13,0.7000000000000002,SD_Rain_combined,Synthetic
+1.0,0.46875,0.46875,15,0,17,0.8000000000000003,SD_Rain_combined,Synthetic
+1.0,0.25,0.25,8,0,24,0.9000000000000001,SD_Rain_combined,Synthetic

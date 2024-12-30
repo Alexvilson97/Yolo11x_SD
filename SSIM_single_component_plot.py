@@ -6,9 +6,9 @@ import csv
 from skimage.metrics import structural_similarity as ssim
 
 # Paths for real and synthetic images
-real_folder = "Images/Night_highway_scenario/RD"
-synthetic_folder = "Images/Night_highway_scenario/SD"
-output_folder = "SSIM_outputs_night_highway"
+real_folder = "Images\City_sunny\RD"
+synthetic_folder = "Images\City_sunny\SD"
+output_folder = "SSIM_outputs_City_sunny"
 os.makedirs(output_folder, exist_ok=True)
 
 # Helper function to compute luminance, contrast, and structure (real vs synthetic comparison)

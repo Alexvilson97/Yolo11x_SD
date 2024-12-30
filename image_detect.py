@@ -11,7 +11,7 @@ def load_yolo_model(weights_path="yolo11x.pt"):
     return model
 
 # Function to perform object detection
-def detect_objects(image, model, conf_threshold=0.1, nms_threshold=0.9):
+def detect_objects(image, model, conf_threshold=0.3, nms_threshold=0.9):
     results = model(image, imgsz=1280)
     
     boxes = []
@@ -54,8 +54,8 @@ def save_detections_and_ground_truth(
     confidences, 
     class_ids, 
     classes, 
-    image_output_dir='Detection_results\FOG_highway\SD\FOG_density', 
-    csv_output_dir='Detection_results\FOG_highway\SD\FOG_density'
+    image_output_dir='Detection_results\Rain_Scenario\RD', 
+    csv_output_dir='Detection_results\Rain_Scenario\RD'
 ):
     # Create output directories if they don't exist
     os.makedirs(image_output_dir, exist_ok=True)
@@ -115,7 +115,7 @@ def save_detections_and_ground_truth(
     print(f"Combined image saved to: {combined_image_path}")
 
 
-def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Detection_results\FOG_highway\SD\Images\FOG_density', csv_output_dir='Detection_results\FOG_highway\SD\CSV\FOG_density'):
+def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Detection_results\Rain_Scenario\RD\Images', csv_output_dir='Detection_results\Rain_Scenario\RD\CSV'):
     for image_filename in os.listdir(folder_path):
         if image_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_path = os.path.join(folder_path, image_filename)
@@ -166,6 +166,6 @@ def extract_frame_number(filename):
 
 # Example usage
 if __name__ == "__main__":
-    folder_path = r"Images\fog_Highway\Fog_density_study"  # Folder containing multiple images
-    ground_truth_csv_folder = r"Annotations\Fog_highway\CSV_FOG_desity"  # Folder containing ground truth CSVs
+    folder_path = r"Images\Rain_scenario\RD"  # Folder containing multiple images
+    ground_truth_csv_folder = r"Annotations\Rain_scenario\RD_CSV"  # Folder containing ground truth CSVs
     main(folder_path, ground_truth_csv_folder)
