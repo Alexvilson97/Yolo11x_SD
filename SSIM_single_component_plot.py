@@ -6,29 +6,31 @@ import csv
 from skimage.metrics import structural_similarity as ssim
 
 # Paths for real and synthetic images
-real_folder = "Images\City_sunny\RD"
-synthetic_folder = "Images\City_sunny\SD"
-output_folder = "SSIM_outputs_City_sunny"
+real_folder = "Images/Rain_scenario/RD"
+synthetic_folder = "Images/Rain_scenario/SD"
+output_folder = "SSIM_outputs_Rain"
 os.makedirs(output_folder, exist_ok=True)
 
 # Helper function to compute luminance, contrast, and structure (real vs synthetic comparison)
 def compute_metrics(image1, image2, output_folder, image_name):
-    # Calculate luminance (mean intensity) and contrast (standard deviation) for the real image
-    luminance = np.mean(image1)
-    contrast = np.std(image1)
+    # Calculate luminance (mean intensity) and contrast (standard deviation)
+    luminance1 = np.mean(image1)
+    contrast1 = np.std(image1)
     
-    # Compute SSIM between real and synthetic images to get structure
+    luminance2 = np.mean(image2)
+    contrast2 = np.std(image2)
+    
+    # Compute gradient magnitude (as a proxy for structure)
+    grad_x1 = cv2.Sobel(image1, cv2.CV_64F, 1, 0, ksize=3)
+    grad_y1 = cv2.Sobel(image1, cv2.CV_64F, 0, 1, ksize=3)
+    structure1 = np.mean(np.sqrt(grad_x1**2 + grad_y1**2))  # Gradient magnitude for real image
+    
+    grad_x2 = cv2.Sobel(image2, cv2.CV_64F, 1, 0, ksize=3)
+    grad_y2 = cv2.Sobel(image2, cv2.CV_64F, 0, 1, ksize=3)
+    structure2 = np.mean(np.sqrt(grad_x2**2 + grad_y2**2))  # Gradient magnitude for synthetic image
+
+    # Save SSIM map as an image
     ssim_score, ssim_map = ssim(image1, image2, full=True, data_range=1.0)
-    structure = np.mean(ssim_map)  # Structure derived from SSIM map
-    
-    # Check for invalid structure values (NaN or Inf)
-    if np.isnan(structure) or np.isinf(structure):
-        print("Warning: structure value is NaN or Inf.")
-        structure = 0
-    
-    print(f"SSIM Structure for {image_name}: {structure}")
-    
-    # Save SSIM map as image
     ssim_map_path = os.path.join(output_folder, f"SSIM_map_{image_name}.png")
     plt.imshow(ssim_map, cmap='gray')
     plt.colorbar()
@@ -36,7 +38,9 @@ def compute_metrics(image1, image2, output_folder, image_name):
     plt.savefig(ssim_map_path)
     plt.close()  # Close the plot to avoid memory overflow during large loops
     
-    return luminance, contrast, structure
+    print(f"Metrics for {image_name} -> Luminance1: {luminance1}, Contrast1: {contrast1}, Structure1: {structure1}")
+    print(f"Metrics for {image_name} -> Luminance2: {luminance2}, Contrast2: {contrast2}, Structure2: {structure2}")
+    return (luminance1, contrast1, structure1), (luminance2, contrast2, structure2)
 
 # Get common files
 real_files = {os.path.splitext(f)[0]: f for f in os.listdir(real_folder)}
@@ -53,6 +57,7 @@ synthetic_contrast_values = []
 synthetic_structure_values = []
 
 # Process images and calculate metrics
+# Process images and calculate metrics
 for name in common_files:
     real_img = cv2.imread(os.path.join(real_folder, real_files[name]), cv2.IMREAD_GRAYSCALE)
     synthetic_img = cv2.imread(os.path.join(synthetic_folder, synthetic_files[name]), cv2.IMREAD_GRAYSCALE)
@@ -65,8 +70,7 @@ for name in common_files:
     synthetic_img_norm = synthetic_img.astype(np.float64) / 255.0
 
     # Calculate metrics for real vs. synthetic images
-    real_luminance, real_contrast, real_structure = compute_metrics(real_img_norm, synthetic_img_norm, output_folder, name)
-    synthetic_luminance, synthetic_contrast, synthetic_structure = compute_metrics(synthetic_img_norm, real_img_norm, output_folder, name)
+    (real_luminance, real_contrast, real_structure), (synthetic_luminance, synthetic_contrast, synthetic_structure) = compute_metrics(real_img_norm, synthetic_img_norm, output_folder, name)
     
     # Append values to respective lists
     real_luminance_values.append(real_luminance)
