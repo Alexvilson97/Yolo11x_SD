@@ -2,20 +2,3 @@ Component,Real Average,Synthetic Average
 Luminance,0.4938253313888746,0.6367796851587052
 Contrast,0.28780772499664303,0.2037748441840838
 Structure,0.050539810572662824,0.06286614559342511
-
-
-**** result analyse******
-Luminance:
-
-The values seem reasonable because luminance values are generally between 0 (dark) and 1 (bright) for normalized images.
-The synthetic images have a significantly higher average luminance, which suggests they are brighter than the real ones. Verify if this matches the visual appearance of your data.
-Contrast:
-
-The contrast values for real images are higher than those for synthetic images, suggesting that real images have more intensity variability.
-This is plausible if real-world scenes are inherently more complex compared to synthetically generated ones.
-Structure:
-
-The structure values are relatively low (close to 0.05–0.06), indicating low structural similarity between the real and synthetic images.
-This is reasonable if the synthetic images significantly differ in texture, edges, or patterns from the real ones. However, if your synthetic images are meant to closely mimic real images, this result might indicate an issue in generation or preprocessing.
-
-****..........****
