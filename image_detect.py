@@ -11,7 +11,7 @@ def load_yolo_model(weights_path="yolo11x.pt"):
     return model
 
 # Function to perform object detection
-def detect_objects(image, model, conf_threshold=0.3, nms_threshold=0.9):
+def detect_objects(image, model, conf_threshold=0.9, nms_threshold=0.5):
     results = model(image, imgsz=1280)
     
     boxes = []
@@ -54,8 +54,8 @@ def save_detections_and_ground_truth(
     confidences, 
     class_ids, 
     classes, 
-    image_output_dir='Detection_results\Rain_Scenario\RD', 
-    csv_output_dir='Detection_results\Rain_Scenario\RD'
+    image_output_dir='Detection_results\Rain_Scenario\RD_nms', 
+    csv_output_dir='Detection_results\Rain_Scenario\RD_nms'
 ):
     # Create output directories if they don't exist
     os.makedirs(image_output_dir, exist_ok=True)
@@ -115,7 +115,7 @@ def save_detections_and_ground_truth(
     print(f"Combined image saved to: {combined_image_path}")
 
 
-def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Detection_results\Rain_Scenario\RD\Images', csv_output_dir='Detection_results\Rain_Scenario\RD\CSV'):
+def process_folder(folder_path, model, classes, ground_truth_csv_folder, image_output_dir='Detection_results\Rain_Scenario\RD\Images_nms2', csv_output_dir='Detection_results\Rain_Scenario\RD\CSV_nms2'):
     for image_filename in os.listdir(folder_path):
         if image_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_path = os.path.join(folder_path, image_filename)

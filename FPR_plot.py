@@ -118,9 +118,9 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
     process_files(real_csv_files, "Real", "blue")
 
     # Finalize plot
-    plt.title("False Positive Rate vs Confidence Levels", fontsize=16)  # Title font size
-    plt.xlabel("Confidence Levels", fontsize=14)  # X-axis label font size
-    plt.ylabel("False Positive Rate (FPR)", fontsize=14)  # Y-axis label font size
+    plt.title("Average False Positive Rate vs Confidence Threshold", fontsize=24)  # Title font size
+    plt.xlabel("Confidence Threshold", fontsize=22)  # X-axis label font size
+    plt.ylabel("Avg False Positive Rate", fontsize=22)  # Y-axis label font size
     plt.xticks(confidence_levels, fontsize=12)  # X-axis tick font size
     plt.yticks(fontsize=12)  # Y-axis tick font size
     plt.ylim(0, 1)

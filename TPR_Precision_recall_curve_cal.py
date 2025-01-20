@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 def calculate_iou(box1, box2):
     # Calculate intersection
     x1 = max(box1[0], box2[0])
@@ -20,7 +19,6 @@ def calculate_iou(box1, box2):
     # Calculate IoU
     iou = intersection / union if union != 0 else 0
     return iou
-
 
 def process_frame(frame_number, ground_truth_boxes, predicted_boxes, iou_thresholds):
     TP = 0
@@ -54,13 +52,10 @@ def process_frame(frame_number, ground_truth_boxes, predicted_boxes, iou_thresho
 
     return TP, FP, FN
 
-
 def calculate_metrics(TP, FP, FN, total_objects):
     """Calculate precision, recall, FPR, FNR, and TPR."""
     precision = TP / max(TP + FP, 1)
     recall = TP / max(TP + FN, 1)
-#    FPR = FP / max(total_objects - (TP + FN), 1)
-#    FNR = FN / max(TP + FN, 1)
     TPR = recall
 
     return {
@@ -113,7 +108,7 @@ real_csv_files = [r"combined_csv\Rainy_residential\RD_Rain_combined.csv"]
 synthetic_csv_files = [r"combined_csv\Rainy_residential\SD_Rain_combined.csv"]
 
 confidence_levels = np.arange(0.3, 1.0, 0.1)
-iou_thresholds = [0.5, 0.8, 0.9]
+iou_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 def process_files(csv_files, data_type):
     """Process a list of CSV files and add a 'data_type' column."""
@@ -127,7 +122,6 @@ def process_files(csv_files, data_type):
 
         metrics_results.extend(scenario_metrics)
     return metrics_results
-
 
 # Process real and synthetic CSV files
 all_metrics_results = []
@@ -143,22 +137,33 @@ df_metrics.to_csv(output_csv_path, index=False)
 
 print(f"Metrics saved to {output_csv_path}")
 
-# Plot the graphs
+# Plot the TPR vs Confidence graph
 plt.figure(figsize=(12, 8))
-
-# Plot TPR vs Confidence for Real and Synthetic data
 for (scenario, data_type), group in df_metrics.groupby(['scenario', 'data_type']):
     label = f"{scenario} ({data_type})"
     plt.plot(group['confidence'], group['TPR'], marker='o', label=label)
     for i, tpr in enumerate(group['TPR']):
         plt.text(group['confidence'].values[i], tpr, f"{tpr:.2f}", fontsize=10)
-
-# Set y-axis limits to ensure normalization
 plt.ylim(0, 1)
+plt.title("True Positive Rate vs Confidence Levels", fontsize=16)
+plt.xlabel("Confidence Levels", fontsize=16)
+plt.ylabel("True Positive Rate (TPR)", fontsize=16)
+plt.legend()
+plt.grid(True)
+plt.show()
 
-plt.title("Average True Positive Rate vs Confidence Threshold", fontsize=24)
-plt.xlabel("Confidence Threshold", fontsize=22)
-plt.ylabel("Avg True Positive Rate", fontsize=22)
+# Plot the Precision-Recall graph
+plt.figure(figsize=(12, 8))
+for (scenario, data_type), group in df_metrics.groupby(['scenario', 'data_type']):
+    label = f"{scenario} ({data_type})"
+    plt.plot(group['recall'], group['precision'], marker='o', label=label)
+    for i, (recall, precision) in enumerate(zip(group['recall'], group['precision'])):
+        plt.text(recall, precision, f"({recall:.2f}, {precision:.2f})", fontsize=10)
+plt.ylim(0, 1)
+plt.xlim(0, 1)
+plt.title("Precision-Recall Curve", fontsize=16)
+plt.xlabel("Recall", fontsize=16)
+plt.ylabel("Precision", fontsize=16)
 plt.legend()
 plt.grid(True)
 plt.show()
