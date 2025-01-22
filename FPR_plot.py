@@ -118,14 +118,14 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
     process_files(real_csv_files, "Real", "blue")
 
     # Finalize plot
-    plt.title("Average False Positive Rate vs Confidence Threshold", fontsize=24)  # Title font size
-    plt.xlabel("Confidence Threshold", fontsize=22)  # X-axis label font size
+    plt.title("Average FPR vs Confidence (Sunny City Scenario)", fontsize=24)  # Title font size
+    plt.xlabel("Confidence Thresholds", fontsize=22)  # X-axis label font size
     plt.ylabel("Avg False Positive Rate", fontsize=22)  # Y-axis label font size
-    plt.xticks(confidence_levels, fontsize=12)  # X-axis tick font size
-    plt.yticks(fontsize=12)  # Y-axis tick font size
+    plt.xticks(confidence_levels, fontsize=16)  # X-axis tick font size
+    plt.yticks(fontsize=16)  # Y-axis tick font size
     plt.ylim(0, 1)
     plt.grid(True)
-    plt.legend(fontsize=12)  # Legend font size
+    plt.legend(fontsize=14)  # Legend font size
     plt.show()
 
     # Save results to CSV
@@ -135,8 +135,8 @@ def plot_fpr_vs_confidence(synth_csv_files, real_csv_files, confidence_levels, o
 
 
 if __name__ == "__main__":
-    real_csv_files = ["combined_csv\Rainy_residential\RD_Rain_combined.csv"]
-    synth_csv_files = ["combined_csv\Rainy_residential\SD_Rain_combined.csv"]
+    real_csv_files = [r"combined_csv\City_sunny\RD_Sunny_City.csv"]
+    synth_csv_files = [r"combined_csv\City_sunny\SD_Sunny_City.csv"]
     confidence_levels = np.arange(0.3, 1.0, 0.1)
     output_csv = "fpr_results_combined.csv"
 

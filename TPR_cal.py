@@ -109,11 +109,11 @@ def process_csv(csv_path, confidence_levels, iou_thresholds):
     return metrics_results
 
 # Define CSV files for real and synthetic data
-real_csv_files = [r"combined_csv\Rainy_residential\RD_Rain_combined.csv"]
-synthetic_csv_files = [r"combined_csv\Rainy_residential\SD_Rain_combined.csv"]
+real_csv_files = [r"combined_csv\Rainy_residential\RD_Rainy_Road.csv"]
+synthetic_csv_files = [r"combined_csv\Rainy_residential\SD_Rainy_Road.csv"]
 
 confidence_levels = np.arange(0.3, 1.0, 0.1)
-iou_thresholds = [0.5, 0.8, 0.9]
+iou_thresholds = [0.5]
 
 def process_files(csv_files, data_type):
     """Process a list of CSV files and add a 'data_type' column."""
@@ -151,14 +151,18 @@ for (scenario, data_type), group in df_metrics.groupby(['scenario', 'data_type']
     label = f"{scenario} ({data_type})"
     plt.plot(group['confidence'], group['TPR'], marker='o', label=label)
     for i, tpr in enumerate(group['TPR']):
-        plt.text(group['confidence'].values[i], tpr, f"{tpr:.2f}", fontsize=10)
+        plt.text(group['confidence'].values[i], tpr, f"{tpr:.2f}", fontsize=14)
 
 # Set y-axis limits to ensure normalization
 plt.ylim(0, 1)
 
-plt.title("Average True Positive Rate vs Confidence Threshold", fontsize=24)
-plt.xlabel("Confidence Threshold", fontsize=22)
+# Adjust axis tick font sizes
+plt.tick_params(axis='x', labelsize=16)  # Increase x-axis tick label size
+plt.tick_params(axis='y', labelsize=16)  # Increase y-axis tick label size
+
+plt.title("Average TPR vs Confidence (Rainy Road Scenario)", fontsize=24)
+plt.xlabel("Confidence Thresholds", fontsize=22)
 plt.ylabel("Avg True Positive Rate", fontsize=22)
-plt.legend()
+plt.legend(fontsize=14)
 plt.grid(True)
 plt.show()
